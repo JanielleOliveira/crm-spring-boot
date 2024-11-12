@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface ContatoRepository extends JpaRepository<Contato, Long> {
     // Métodos personalizados para Contato, se necessário
 }
+
