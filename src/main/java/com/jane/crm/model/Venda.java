@@ -3,19 +3,21 @@ package com.jane.crm.model;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
-public class Contato {
+public class Venda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String tipo; // Ex.: "Telefone", "Email", etc.
-    private String valor;
+    private Date dataVenda;
+    private String produto;
+    private Double valor;
 
     @ManyToOne
     private Cliente cliente;
 
-    // Getters e setters
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -25,19 +27,27 @@ public class Contato {
         this.id = id;
     }
 
-    public String getTipo() {
-        return tipo;
+    public Date getDataVenda() {
+        return dataVenda;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setDataVenda(Date dataVenda) {
+        this.dataVenda = dataVenda;
     }
 
-    public String getValor() {
+    public String getProduto() {
+        return produto;
+    }
+
+    public void setProduto(String produto) {
+        this.produto = produto;
+    }
+
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
@@ -49,4 +59,3 @@ public class Contato {
         this.cliente = cliente;
     }
 }
-
