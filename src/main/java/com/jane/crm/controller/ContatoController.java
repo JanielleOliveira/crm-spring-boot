@@ -1,10 +1,9 @@
 package com.jane.crm.controller;
 
 import com.jane.crm.model.Contato;
-import com.jane.crm.service.ContatoService;
+import com.jane.crm.repository.ContatoRepository;
+import com.jane.crm.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,42 +13,41 @@ import java.util.List;
 public class ContatoController {
 
     @Autowired
-    private ContatoService contatoService;
+    private ContatoRepository contatoRepository;
 
-    @GetMapping
-    public List<Contato> listarContatos() {
-        return contatoService.listarContatos();
-    }
+    @Autowired
+    private ClienteRepository clienteRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Contato> buscarContatoPorId(@PathVariable Long id) {
-        return contatoService.buscarContatoPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
+    // Cadastrar novo contato
     @PostMapping
-    public ResponseEntity<Contato> salvarContato(@RequestBody Contato contato) {
-        Contato novoContato = contatoService.salvarContato(contato);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoContato);
+    public Contato cadastrarContato(@RequestParam Long clienteId, @RequestBody Contato contato) {
+        return clienteRepository.findById(clienteId).map(cliente -> {
+            contato.setCliente(cliente);
+            return contatoRepository.save(contato);
+        }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
+    // Listar todos os contatos de um cliente
+    @GetMapping("/cliente/{clienteId}")
+    public List<Contato> listarContatos(@PathVariable Long clienteId) {
+        return contatoRepository.findAll().stream()
+                .filter(contato -> contato.getCliente().getId().equals(clienteId))
+                .toList();
+    }
+
+    // Atualizar um contato
     @PutMapping("/{id}")
-    public ResponseEntity<Contato> atualizarContato(@PathVariable Long id, @RequestBody Contato contato) {
-        if (!contatoService.buscarContatoPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        contato.setId(id);
-        Contato contatoAtualizado = contatoService.salvarContato(contato);
-        return ResponseEntity.ok(contatoAtualizado);
+    public Contato atualizarContato(@PathVariable Long id, @RequestBody Contato contatoAtualizado) {
+        return contatoRepository.findById(id).map(contato -> {
+            contato.setTipo(contatoAtualizado.getTipo());
+            contato.setValor(contatoAtualizado.getValor());
+            return contatoRepository.save(contato);
+        }).orElseThrow(() -> new RuntimeException("Contato não encontrado"));
     }
 
+    // Excluir um contato
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarContato(@PathVariable Long id) {
-        if (!contatoService.buscarContatoPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        contatoService.deletarContato(id);
-        return ResponseEntity.noContent().build();
+    public void excluirContato(@PathVariable Long id) {
+        contatoRepository.deleteById(id);
     }
 }
