@@ -9,10 +9,6 @@
 <body>
 <div class="container">
     <h1>CRM - Clientes</h1>
-    <div id="clientes-lista">
-        <h2>Lista de Clientes</h2>
-        <ul id="clientes"></ul>
-    </div>
     <div id="form-cliente">
         <h2>Cadastrar Cliente</h2>
         <form id="formCliente">
@@ -24,7 +20,42 @@
             <input type="text" id="telefone" required><br><br>
             <button type="submit">Cadastrar</button>
         </form>
+        <div id="clientes-lista">
+            <h2>Lista de Clientes</h2>
+            <ul id="clientes"></ul>
+        </div>
     </div>
+    <!-- Seção de Contatos -->
+    <div id="contatos">
+        <h3>Contatos</h3>
+        <ul id="contatos-lista"></ul>
+        <form id="formContato">
+            <input type="text" id="tipo" placeholder="(ex: Telefone, Email)" required>
+            <input type="text" id="valor" placeholder="(ex: +55 11 98765-4321)" required>
+            <button type="submit">Adicionar Contato</button>
+        </form>
+    </div>
+
+    <!-- Seção de Vendas -->
+    <div id="vendas">
+        <h3>Vendas</h3>
+        <ul id="vendas-lista"></ul>
+        <form id="formVenda">
+            <input type="date" id="dataVenda" required>
+            <input type="text" id="produto" placeholder="Produto/Serviço" required>
+            <input type="number" id="valorVenda" placeholder="Valor" required>
+            <button type="submit">Registrar Venda</button>
+        </form>
+    </div>
+    <div id="relatorio">
+        <h3>Relatório de Vendas por Cliente</h3>
+        <form id="formRelatorio">
+            <input type="number" id="clienteId" placeholder="ID do Cliente" required>
+            <button type="submit">Gerar Relatório</button>
+        </form>
+        <div id="relatorioResultado"></div>
+    </div>
+
 </div>
 <script src="script.js"></script>
 </body>
