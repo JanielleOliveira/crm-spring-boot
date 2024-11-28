@@ -4,6 +4,8 @@ import com.jane.crm.model.Venda;
 import com.jane.crm.repository.ClienteRepository;
 import com.jane.crm.repository.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,5 +42,18 @@ public class VendaController {
                 .mapToDouble(Venda::getValor)
                 .sum();
     }
+
+    // Exclusão de venda por cliente
+    @DeleteMapping("/cliente/{clienteId}/limpar")
+    public ResponseEntity<String> deletarVendasPorCliente(@PathVariable Long clienteId) {
+        List<Venda> vendas = vendaRepository.findByClienteId(clienteId);
+        if (vendas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma venda encontrada para o cliente com ID " + clienteId);
+        }
+
+        vendaRepository.deleteAll(vendas);
+        return ResponseEntity.ok("Todas as vendas do cliente com ID " + clienteId + " foram apagadas com sucesso!");
+    }
+
 
 }
